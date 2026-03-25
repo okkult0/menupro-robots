@@ -20,7 +20,7 @@ jobs:
 
       - name: Instalar Playwright y Firebase
         run: |
-          pip install playwright firebase-admin
+          pip install playwright firebase-admin beautifulsoup4 httpx
           playwright install chromium
 
       - name: 🤖 Ejecutar Robot DIA
