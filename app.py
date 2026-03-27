@@ -9,7 +9,12 @@ import firebase_admin
 from firebase_admin import credentials, firestore
 
 # --- 1. CONFIGURACION DE PAGINA ---
-st.set_page_config(page_title="Menu Pro", page_icon="👩🏻‍🍳", layout="centered", initial_sidebar_state="collapsed")
+st.set_page_config(
+    page_title="Menu Pro", 
+    page_icon="👩🏻‍🍳", 
+    layout="wide",  # <--- Cambia "centered" por "wide"
+    initial_sidebar_state="collapsed"
+)
 
 # --- 2. GESTIÓN DEL FONDO ---
 DIRECTORIO_ACTUAL = os.path.dirname(os.path.abspath(__file__))
