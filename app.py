@@ -216,10 +216,14 @@ db = firestore.client()
 
 # --- FUNCIONES DE NUBE ---
 def cargar_nube(documento, por_defecto):
-    doc_ref = db.collection('app_data').document(documento)
-    doc = doc_ref.get()
-    if doc.exists:
-        return doc.to_dict()
+    try:
+        # Añadimos un timeout de 10 segundos para que no se quede pensando siempre
+        doc_ref = db.collection('app_data').document(documento)
+        doc = doc_ref.get(timeout=10) 
+        if doc.exists:
+            return doc.to_dict()
+    except Exception as e:
+        st.warning(f"⚠️ Nota: Usando datos locales temporales para {documento}")
     return por_defecto
 
 def guardar_nube(documento, datos):
