@@ -1,0 +1,8 @@
+# Ignorar las llaves de Firebase y secretos locales
+firebase_key.json
+.streamlit/
+
+# Ignorar las carpetas ocultas de Python
+__pycache__/
+.venv/
+env/
