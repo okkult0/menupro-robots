@@ -9,12 +9,7 @@ import firebase_admin
 from firebase_admin import credentials, firestore
 
 # --- 1. CONFIGURACION DE PAGINA ---
-st.set_page_config(
-    page_title="Menu Pro", 
-    page_icon="👩🏻‍🍳", 
-    layout="wide",  # <--- Cambia "centered" por "wide"
-    initial_sidebar_state="collapsed"
-)
+st.set_page_config(page_title="Menu Pro", page_icon="logo.png", layout="wide", initial_sidebar_state="collapsed")
 
 # --- 2. GESTIÓN DEL FONDO ---
 DIRECTORIO_ACTUAL = os.path.dirname(os.path.abspath(__file__))
@@ -66,14 +61,28 @@ else:
     st.markdown("<style>.stApp { background-color: #101010 !important; }</style>", unsafe_allow_html=True)
 
 
-# --- 3. DISEÑO PREMIUM ---
+# --- 3. DISEÑO PREMIUM Y MAGIA MÓVIL ---
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap');
     
     html, body, [class*="css"] { font-family: 'Poppins', sans-serif !important; }
+    
+    /* 📱 MAGIA MÓVIL: Ocultar barras y ajustar márgenes */
+    #MainMenu {visibility: hidden;}
+    header {visibility: hidden;}
     footer { display: none !important; }
+    
+    .block-container {
+        padding-top: 1rem !important;
+        padding-bottom: 1rem !important;
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+        max-width: 100%;
+    }
+    .stApp > header { background-color: transparent !important; }
 
+    /* DISEÑO DE TARJETAS */
     .tarjeta {
         background-color: rgba(30, 30, 30, 0.85); 
         border-radius: 20px; 
@@ -93,6 +102,7 @@ st.markdown("""
         backdrop-filter: blur(10px) !important;
     }
 
+    /* BOTONES PRINCIPALES */
     [data-testid="baseButton-primary"] {
         background: linear-gradient(135deg, #FF007F 0%, #B0005D 100%) !important;
         color: white !important; 
@@ -112,6 +122,7 @@ st.markdown("""
         box-shadow: 0 12px 30px rgba(255, 0, 127, 0.6) !important; 
     }
     
+    /* BOTONES SECUNDARIOS */
     [data-testid="baseButton-secondary"] {
         background-color: rgba(26, 26, 26, 0.7) !important; 
         color: #00FFFF !important;
@@ -134,6 +145,7 @@ st.markdown("""
         box-shadow: 0 10px 20px rgba(0, 255, 255, 0.2) !important;
     }
 
+    /* ENTRADAS DE TEXTO Y DESPLEGABLES */
     .stTextInput input, .stNumberInput input, .stSelectbox select, .stTextArea textarea {
         background-color: rgba(26, 26, 26, 0.8) !important; border: 1px solid #555555 !important; 
         border-radius: 25px !important; color: #FFFFFF !important; padding: 15px 20px !important;
@@ -200,7 +212,6 @@ except KeyError:
 genai.configure(api_key=API_KEY)
 model = genai.GenerativeModel('gemini-2.5-flash') 
 
-# Inicializar Firebase (Solo 1 vez)
 # Inicializar Firebase (Preparado para la Nube y Local)
 if not firebase_admin._apps:
     try:
@@ -229,7 +240,7 @@ def cargar_nube(documento, por_defecto):
             return doc.to_dict()
     except Exception as e:
         st.warning(f"⚠️ Nota: Usando datos locales temporales para {documento}")
-    return por_defecto
+    return por_defecto  # ¡CORREGIDO! Antes ponía por_defectos
 
 def guardar_nube(documento, datos):
     doc_ref = db.collection('app_data').document(documento)
@@ -587,5 +598,7 @@ elif st.session_state['pagina_actual'] == 'Despensa':
                             
                 st.write("")
                 if st.button("❌ Vaciar Despensa Completa", type="primary", use_container_width=True):
+                    guardar_nube('mi_despensa', {})
+                    st.rerun()
                     guardar_nube('mi_despensa', {})
                     st.rerun()
