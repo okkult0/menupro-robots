@@ -23,70 +23,70 @@ if os.path.exists(RUTA_IMAGEN):
     with open(RUTA_IMAGEN, "rb") as img_file:
         logo_b64 = base64.b64encode(img_file.read()).decode()
     usa_imagen = True
-else:
-    pass 
 
 if usa_imagen:
     fondo_html = f"""
     <style>
-        html, body, .stApp, [data-testid="stAppViewContainer"], [data-testid="stHeader"] {{
-            background-color: transparent !important;
-            background: transparent !important;
-        }}
-        
-        #mi-fondo-nuclear {{
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
+        /* Engañar a Streamlit para que el fondo sea la pantalla entera */
+        [data-testid="stAppViewContainer"] {{
             background-image: url("data:image/png;base64,{logo_b64}");
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
-            z-index: -99999; 
+            background-attachment: fixed;
         }}
         
-        #mi-fondo-nuclear::after {{
+        /* Capa oscura para que el texto se lea bien */
+        [data-testid="stAppViewContainer"]::before {{
             content: "";
-            position: absolute;
+            position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background-color: rgba(0, 0, 0, 0.40); 
+            background-color: rgba(0, 0, 0, 0.6);
+            z-index: -1;
+        }}
+        
+        /* Quitar fondo blanco por defecto */
+        .stApp, html, body, [data-testid="stHeader"] {{
+            background-color: transparent !important;
+            background: transparent !important;
         }}
     </style>
-    <div id="mi-fondo-nuclear"></div>
     """
     st.markdown(fondo_html, unsafe_allow_html=True)
 else:
     st.markdown("<style>.stApp { background-color: #101010 !important; }</style>", unsafe_allow_html=True)
 
 
-# --- 3. DISEÑO PREMIUM Y MAGIA MÓVIL ---
+# --- 3. DISEÑO PREMIUM: MODO APP NATIVA (NUCLEAR) ---
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap');
     
     html, body, [class*="css"] { font-family: 'Poppins', sans-serif !important; }
     
-    /* 📱 MAGIA MÓVIL: Ocultar barras y ajustar márgenes */
-    #MainMenu {visibility: hidden;}
-    header {visibility: hidden;}
-    footer { display: none !important; }
+    /* 💥 MODO NUCLEAR: ELIMINAR MÁRGENES Y CABECERA DE STREAMLIT */
+    [data-testid="stAppViewContainer"] > .main {
+        padding: 0px !important;
+        margin: 0px !important;
+    }
     
     .block-container {
-        padding-top: 1rem !important;
-        padding-bottom: 1rem !important;
+        padding-top: 2rem !important; /* Espacio mínimo para el notch del móvil */
         padding-left: 1rem !important;
         padding-right: 1rem !important;
-        max-width: 100%;
+        padding-bottom: 2rem !important;
+        max-width: 100% !important;
     }
-    .stApp > header { background-color: transparent !important; }
+    
+    header {visibility: hidden !important; display: none !important;}
+    #MainMenu {visibility: hidden !important; display: none !important;}
+    footer {visibility: hidden !important; display: none !important;}
 
-    /* DISEÑO DE TARJETAS */
+    /* DISEÑO DE TARJETAS (Cajas de texto y menús) */
     .tarjeta {
         background-color: rgba(30, 30, 30, 0.85); 
         border-radius: 20px; 
-        padding: 30px;
+        padding: 25px;
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
         margin-bottom: 25px;
         border: 1px solid #444444;
@@ -102,94 +102,66 @@ st.markdown("""
         backdrop-filter: blur(10px) !important;
     }
 
-    /* BOTONES PRINCIPALES */
+    /* 🔥 BOTONES PRINCIPALES (Grandes y redondeados para móvil) */
     [data-testid="baseButton-primary"] {
         background: linear-gradient(135deg, #FF007F 0%, #B0005D 100%) !important;
         color: white !important; 
         border-radius: 50px !important; 
-        padding: 20px !important; 
-        font-size: 22px !important; 
+        font-size: 20px !important; 
         font-weight: 800 !important; 
         border: none !important; 
         box-shadow: 0 8px 25px rgba(255, 0, 127, 0.4) !important; 
         width: 100%; 
-        min-height: 80px !important; 
+        min-height: 65px !important; 
         margin-bottom: 15px;
-        transition: all 0.3s ease;
+        transition: all 0.2s ease;
     }
-    [data-testid="baseButton-primary"]:hover { 
-        transform: translateY(-3px) scale(1.02) !important; 
-        box-shadow: 0 12px 30px rgba(255, 0, 127, 0.6) !important; 
+    [data-testid="baseButton-primary"]:active { 
+        transform: scale(0.96) !important; 
     }
     
-    /* BOTONES SECUNDARIOS */
+    /* 💦 BOTONES SECUNDARIOS (Para menús y opciones) */
     [data-testid="baseButton-secondary"] {
         background-color: rgba(26, 26, 26, 0.7) !important; 
         color: #00FFFF !important;
         border: 2px solid #00FFFF !important; 
         border-radius: 50px !important; 
-        font-size: 20px !important; 
+        font-size: 18px !important; 
         font-weight: 800 !important; 
         width: 100%; 
-        min-height: 90px !important; 
-        margin-bottom: 20px;
-        transition: all 0.3s ease;
-        display: flex;
-        justify-content: center;
-        align-items: center;
+        min-height: 60px !important; 
+        margin-bottom: 15px;
         backdrop-filter: blur(5px);
     }
-    [data-testid="baseButton-secondary"]:hover {
-        background-color: rgba(0, 255, 255, 0.1) !important; 
-        transform: translateY(-4px) !important;
-        box-shadow: 0 10px 20px rgba(0, 255, 255, 0.2) !important;
+    [data-testid="baseButton-secondary"]:active {
+        background-color: rgba(0, 255, 255, 0.2) !important; 
     }
 
     /* ENTRADAS DE TEXTO Y DESPLEGABLES */
     .stTextInput input, .stNumberInput input, .stSelectbox select, .stTextArea textarea {
-        background-color: rgba(26, 26, 26, 0.8) !important; border: 1px solid #555555 !important; 
-        border-radius: 25px !important; color: #FFFFFF !important; padding: 15px 20px !important;
+        background-color: rgba(26, 26, 26, 0.9) !important; 
+        border: 1px solid #666 !important; 
+        border-radius: 20px !important; 
+        color: #FFFFFF !important; 
+        padding: 15px !important;
         font-size: 16px !important;
     }
-    .stTextInput input:focus, .stNumberInput input:focus, .stTextArea textarea:focus {
-        border: 1px solid #00FFFF !important; box-shadow: 0 0 10px rgba(0, 255, 255, 0.2) !important;
-    }
     
-    [data-testid="stExpander"] {
-        background-color: rgba(30, 30, 30, 0.85) !important;
-        border-radius: 15px !important;
-        border: 1px solid #444444 !important;
-        backdrop-filter: blur(10px) !important;
-    }
-    [data-testid="stExpander"] summary p {
-        color: #00FFFF !important;
-        font-weight: 800 !important;
-        font-size: 18px !important;
-    }
-
+    /* TEXTOS */
     div[data-testid="stMarkdownContainer"] h1, 
     div[data-testid="stMarkdownContainer"] h2, 
     div[data-testid="stMarkdownContainer"] h3, 
     div[data-testid="stMarkdownContainer"] p,
     div[data-testid="stMarkdownContainer"] li {
         color: #FFFFFF !important;
-        -webkit-text-fill-color: #FFFFFF !important; 
     }
     
-    div[data-testid="stMarkdownContainer"] span.texto-rosa {
-        color: #FF007F !important;
-        -webkit-text-fill-color: #FF007F !important;
-    }
-    
-    div[data-testid="stMarkdownContainer"] span.texto-cyan {
-        color: #00FFFF !important;
-        -webkit-text-fill-color: #00FFFF !important;
-    }
+    div[data-testid="stMarkdownContainer"] span.texto-rosa { color: #FF007F !important; }
+    div[data-testid="stMarkdownContainer"] span.texto-cyan { color: #00FFFF !important; }
 
-    h1 { font-weight: 800; text-align: center; font-size: 3.5rem !important; margin-bottom: 0px; text-shadow: 2px 2px 10px rgba(0,0,0,0.5); }
-    h2, h3 { font-weight: 800; text-align: center; text-shadow: 1px 1px 5px rgba(0,0,0,0.5); }
-    .subtitulo { text-align: center; margin-bottom: 40px; font-size: 1.2rem; text-shadow: 1px 1px 5px rgba(0,0,0,0.5); }
-    
+    h1 { font-weight: 800; text-align: center; font-size: 3rem !important; margin-bottom: 0px; text-shadow: 2px 2px 10px rgba(0,0,0,0.8); }
+    h2, h3 { font-weight: 800; text-align: center; text-shadow: 1px 1px 5px rgba(0,0,0,0.8); }
+    .subtitulo { text-align: center; margin-bottom: 30px; font-size: 1.1rem; text-shadow: 1px 1px 5px rgba(0,0,0,0.8); color: #ddd;}
 </style>
 """, unsafe_allow_html=True)
 
@@ -201,7 +173,6 @@ def cambiar_pagina(nueva_pagina):
     st.session_state['pagina_actual'] = nueva_pagina
     st.rerun() 
 
-
 # --- 4. CONFIGURACION DE IA Y FIREBASE ---
 try:
     API_KEY = st.secrets["GEMINI_API_KEY"]
@@ -212,14 +183,12 @@ except KeyError:
 genai.configure(api_key=API_KEY)
 model = genai.GenerativeModel('gemini-2.5-flash') 
 
-# Inicializar Firebase (Preparado para la Nube y Local)
+# Inicializar Firebase
 if not firebase_admin._apps:
     try:
-        # 1. Intentamos leer desde los Secretos de Streamlit (Para la Nube)
         if "firebase" in st.secrets:
             cred_dict = dict(st.secrets["firebase"])
             cred = credentials.Certificate(cred_dict)
-        # 2. Si no estamos en la nube, usamos el archivo local (Para tu PC)
         else:
             cred = credentials.Certificate("firebase_key.json")
             
@@ -233,31 +202,21 @@ db = firestore.client()
 # --- FUNCIONES DE NUBE ---
 def cargar_nube(documento, por_defecto):
     try:
-        # Añadimos un timeout de 10 segundos para que no se quede pensando siempre
         doc_ref = db.collection('app_data').document(documento)
         doc = doc_ref.get(timeout=10) 
         if doc.exists:
             return doc.to_dict()
     except Exception as e:
         st.warning(f"⚠️ Nota: Usando datos locales temporales para {documento}")
-    return por_defecto  # ¡CORREGIDO! Antes ponía por_defectos
+    return por_defecto
 
 def guardar_nube(documento, datos):
     doc_ref = db.collection('app_data').document(documento)
     doc_ref.set(datos)
 
-# --- CARGA DE DATOS DESDE FIREBASE ---
 despensa = cargar_nube('mi_despensa', {})
 perfil = cargar_nube('mi_perfil', {"comensales": 2, "edades": "Ej: 2 adultos", "dieta": "Mediterránea", "alergias": "", "odios": "", "calorias": 2350, "tiempo": "Indiferente"})
 favoritos = cargar_nube('mis_favoritos', {})
-
-# Los catálogos de los supermercados se siguen cargando en local (por ahora)
-def cargar_catalogo_local(archivo, por_defecto):
-    if os.path.exists(archivo):
-        with open(archivo, "r", encoding="utf-8") as f:
-            return json.load(f)
-    return por_defecto
-
 
 # --- FUNCIONES DE PROCESAMIENTO ---
 def calcular_unidades_reales(nombre_ticket, cantidad_comprada, precio_total_ticket, catalogo):
@@ -321,284 +280,231 @@ if st.session_state['pagina_actual'] == 'Inicio':
     st.markdown("<h1>Menu<span class='texto-rosa'>Pro</span></h1>", unsafe_allow_html=True)
     st.markdown("<div class='subtitulo'>Tu nutrición es importante</div>", unsafe_allow_html=True)
 
-    _, col_centro, _ = st.columns([1, 8, 1])
+    if st.button("👤 ESTADO DE MI PERFIL", type="secondary"):
+        cambiar_pagina('Perfil')
+        
+    if st.button("📦 GESTIÓN DE DESPENSA", type="secondary"):
+        cambiar_pagina('Despensa')
+        
+    if st.button("⭐ MIS FAVORITOS", type="secondary"):
+        cambiar_pagina('Favoritos')
+        
+    st.markdown("<br>", unsafe_allow_html=True)
     
-    with col_centro:
-        if st.button("👤 ESTADO DE MI PERFIL", type="secondary", use_container_width=True):
-            cambiar_pagina('Perfil')
-            
-        if st.button("📦 GESTIÓN DE DESPENSA", type="secondary", use_container_width=True):
-            cambiar_pagina('Despensa')
-            
-        if st.button("⭐ MIS FAVORITOS", type="secondary", use_container_width=True):
-            cambiar_pagina('Favoritos')
-            
-        st.markdown("<br><hr style='border:1px solid #333;'><br>", unsafe_allow_html=True)
-        
-        st.text_area("✍️ ¿Algún antojo o petición especial para hoy?", key="antojo_hoy", placeholder="Ej: Pescado al horno...")
-        
-        if st.button("🍳 GENERAR MI MENÚ ", type="primary", use_container_width=True):
-            if not despensa:
-                st.error("No hay ingredientes en la despensa. Ve a 'Gestión de Despensa' a añadir ingredientes.")
-            else:
-                with st.spinner("Conectando con el Chef, preparando la cocina..."):
-                    try:
-                        res = cocinar_y_descontar(despensa, perfil, st.session_state.get('antojo_hoy', ''))
-                        st.session_state['menu_borrador'] = res
-                    except Exception as e:
-                        st.error(f"Error fatal: {e}")
-
-        if 'menu_borrador' in st.session_state:
-            res = st.session_state['menu_borrador']
-            
-            if "---CONSUMO---" in res:
-                partes = res.split("---CONSUMO---")
-                st.markdown(f"<div class='tarjeta'>{partes[0]}</div>", unsafe_allow_html=True)
+    st.text_area("✍️ ¿Algún antojo o petición especial para hoy?", key="antojo_hoy", placeholder="Ej: Pescado al horno...", height=100)
+    
+    if st.button("🍳 GENERAR MI MENÚ ", type="primary"):
+        if not despensa:
+            st.error("No hay ingredientes en la despensa. Ve a 'Gestión de Despensa'.")
+        else:
+            with st.spinner("Conectando con el Chef..."):
                 try:
-                    gastado = json.loads(partes[1].strip().replace("```json", "").replace("```", ""))
-                    st.markdown(f"<p>Previsión de ingredientes necesario:</p>", unsafe_allow_html=True)
-                    for i, (ing, cant_g) in enumerate(gastado.items()):
-                        st.markdown(f"<span class='texto-cyan' style='font-weight:800;'>{i + 1}. {ing.capitalize()}</span> <span>➔ `{cant_g}`</span>", unsafe_allow_html=True)
-                    
-                    st.write("")
-                    
-                    with st.container(border=True):
-                        st.markdown("<p style='text-align:center;'>¿Te gusta este menú? Guárdalo en favoritos:</p>", unsafe_allow_html=True)
-                        nombre_fav = st.text_input("Dale un nombre:", placeholder="Ej: Pollo crujiente de la Abuela", key="input_fav")
-                        if st.button("⭐ Guardar en Favoritos", use_container_width=True):
-                            nombre_final = nombre_fav if nombre_fav else f"Menú #{len(favoritos) + 1}"
-                            favoritos[nombre_final] = {"receta": partes[0], "ingredientes": gastado}
-                            guardar_nube('mis_favoritos', favoritos)
-                            st.success(f"¡'{nombre_final}' guardado con éxito!")
-                    
-                    st.write("")
-                    col_ok, col_ko = st.columns(2)
-                    with col_ok:
-                        if st.button("✅ Cocinar y Descontar", use_container_width=True):
-                            for ing, cant_g in gastado.items():
-                                ing_l = ing.lower()
-                                if ing_l in despensa:
-                                    despensa[ing_l] -= cant_g
-                                    if despensa[ing_l] <= 0: del despensa[ing_l]
-                            guardar_nube('mi_despensa', despensa)
-                            del st.session_state['menu_borrador']
-                            st.success("¡Ingredientes consumidos! 🍳.")
-                            st.rerun()
-                    with col_ko:
-                        if st.button("❌ Descartar Menú", use_container_width=True):
-                            del st.session_state['menu_borrador']
-                            st.rerun()
-                except json.JSONDecodeError:
-                    st.error("Error al leer consumo.")
-                    
-            else:
-                st.markdown(f"<div class='tarjeta' style='border-color:#FF007F;'>{res}</div>", unsafe_allow_html=True)
-                if st.button("Cerrar Aviso", use_container_width=True):
+                    res = cocinar_y_descontar(despensa, perfil, st.session_state.get('antojo_hoy', ''))
+                    st.session_state['menu_borrador'] = res
+                except Exception as e:
+                    st.error(f"Error: {e}")
+
+    if 'menu_borrador' in st.session_state:
+        res = st.session_state['menu_borrador']
+        
+        if "---CONSUMO---" in res:
+            partes = res.split("---CONSUMO---")
+            st.markdown(f"<div class='tarjeta'>{partes[0]}</div>", unsafe_allow_html=True)
+            try:
+                gastado = json.loads(partes[1].strip().replace("```json", "").replace("```", ""))
+                st.markdown(f"<p style='font-weight:bold;'>Previsión de gasto:</p>", unsafe_allow_html=True)
+                for i, (ing, cant_g) in enumerate(gastado.items()):
+                    st.markdown(f"<span class='texto-cyan' style='font-weight:bold;'>{i + 1}. {ing.capitalize()}</span> <span>➔ `{cant_g}`</span>", unsafe_allow_html=True)
+                
+                st.write("")
+                
+                with st.container(border=True):
+                    nombre_fav = st.text_input("Dale un nombre para favoritos:", placeholder="Ej: Pollo crujiente", key="input_fav")
+                    if st.button("⭐ Guardar", use_container_width=True):
+                        nombre_final = nombre_fav if nombre_fav else f"Menú #{len(favoritos) + 1}"
+                        favoritos[nombre_final] = {"receta": partes[0], "ingredientes": gastado}
+                        guardar_nube('mis_favoritos', favoritos)
+                        st.success("¡Guardado!")
+                
+                st.write("")
+                if st.button("✅ Cocinar y Descontar", type="primary"):
+                    for ing, cant_g in gastado.items():
+                        ing_l = ing.lower()
+                        if ing_l in despensa:
+                            despensa[ing_l] -= cant_g
+                            if despensa[ing_l] <= 0: del despensa[ing_l]
+                    guardar_nube('mi_despensa', despensa)
+                    del st.session_state['menu_borrador']
+                    st.success("¡Ingredientes consumidos!")
+                    st.rerun()
+                
+                if st.button("❌ Descartar Menú", type="secondary"):
                     del st.session_state['menu_borrador']
                     st.rerun()
-
+            except json.JSONDecodeError:
+                st.error("Error al leer consumo.")
+                
+        else:
+            st.markdown(f"<div class='tarjeta' style='border-color:#FF007F;'>{res}</div>", unsafe_allow_html=True)
+            if st.button("Cerrar Aviso", type="secondary"):
+                del st.session_state['menu_borrador']
+                st.rerun()
 
 # ==========================================
 # ⭐ PANTALLA NUEVA: MIS FAVORITOS
 # ==========================================
 elif st.session_state['pagina_actual'] == 'Favoritos':
-    col_volver, _ = st.columns([1, 2])
-    with col_volver:
-        if st.button("🔙 Volver al Inicio", type="primary", use_container_width=True):
-            cambiar_pagina('Inicio')
-            
+    if st.button("🔙 Volver al Inicio", type="primary"):
+        cambiar_pagina('Inicio')
+        
     st.markdown("<h2>MIS <span class='texto-rosa'>FAVORITOS</span></h2>", unsafe_allow_html=True)
-    st.markdown("<div class='subtitulo'>Tu colección de menús estrella</div>", unsafe_allow_html=True)
 
     if not favoritos:
-        st.info("Aún no tienes menús guardados. ¡Ve a Inicio, genera uno y guárdalo!")
+        st.info("Aún no tienes menús guardados.")
     else:
         for nombre_menu, datos_menu in favoritos.items():
             with st.expander(f"⭐ {nombre_menu}"):
                 st.markdown(datos_menu["receta"], unsafe_allow_html=True)
+                st.markdown("<hr>", unsafe_allow_html=True)
                 
-                st.markdown("<hr style='border:1px dashed #444;'>", unsafe_allow_html=True)
-                st.markdown("<p class='texto-cyan' style='font-weight:bold;'>Ingredientes necesarios:</p>", unsafe_allow_html=True)
-                for ing, cant in datos_menu["ingredientes"].items():
-                    st.markdown(f"<span>- {ing.capitalize()}: `{cant}`</span>", unsafe_allow_html=True)
-                
-                st.write("")
-                col_cocinar, col_borrar = st.columns(2)
-                
-                with col_cocinar:
-                    if st.button(f"🍳 Cocinar hoy", key=f"cocinar_{nombre_menu}", use_container_width=True):
-                        faltantes = []
+                if st.button(f"🍳 Cocinar hoy", key=f"cocinar_{nombre_menu}", type="primary"):
+                    faltantes = []
+                    for ing, cant_necesaria in datos_menu["ingredientes"].items():
+                        cant_actual = despensa.get(ing.lower(), 0)
+                        if cant_actual < cant_necesaria:
+                            faltantes.append(f"{ing.capitalize()} ({cant_actual} / {cant_necesaria})")
+                    
+                    if faltantes:
+                        st.error("Faltan ingredientes:")
+                        for f in faltantes: st.write(f"- {f}")
+                    else:
                         for ing, cant_necesaria in datos_menu["ingredientes"].items():
                             ing_l = ing.lower()
-                            cant_actual = despensa.get(ing_l, 0)
-                            if cant_actual < cant_necesaria:
-                                faltantes.append(f"<span class='texto-rosa' style='font-weight:bold;'>{ing.capitalize()}</span> (tienes {cant_actual}, necesitas {cant_necesaria})")
+                            despensa[ing_l] -= cant_necesaria
+                            if despensa[ing_l] <= 0: del despensa[ing_l]
+                        guardar_nube('mi_despensa', despensa)
+                        st.success("¡Ingredientes consumidos!")
+                        st.balloons() 
                         
-                        if faltantes:
-                            st.error("❌ Imposible cocinar. Faltan ingredientes en tu despensa:")
-                            for f in faltantes:
-                                st.markdown(f"- {f}", unsafe_allow_html=True)
-                            st.info("Añade estos ingredientes en la 'Gestión de Despensa' o adapta el menú.")
-                        else:
-                            for ing, cant_necesaria in datos_menu["ingredientes"].items():
-                                ing_l = ing.lower()
-                                despensa[ing_l] -= cant_necesaria
-                                if despensa[ing_l] <= 0:
-                                    del despensa[ing_l]
-                            guardar_nube('mi_despensa', despensa)
-                            st.success("✅ ¡Ingredientes consumidos correctamente! A los fogones 🍳👩🏻‍🍳")
-                            st.balloons() 
-                            
-                with col_borrar:
-                    if st.button(f"🗑️ Borrar Menú", key=f"borrar_{nombre_menu}", use_container_width=True):
-                        del favoritos[nombre_menu]
-                        guardar_nube('mis_favoritos', favoritos)
-                        st.rerun()
-
+                if st.button(f"🗑️ Borrar", key=f"borrar_{nombre_menu}", type="secondary"):
+                    del favoritos[nombre_menu]
+                    guardar_nube('mis_favoritos', favoritos)
+                    st.rerun()
 
 # ==========================================
 # 👤 PANTALLA 2: MI PERFIL
 # ==========================================
 elif st.session_state['pagina_actual'] == 'Perfil':
-    col_volver, _ = st.columns([1, 2])
-    with col_volver:
-        if st.button("🔙 Volver al Inicio", type="primary", use_container_width=True):
-            cambiar_pagina('Inicio')
-            
-    st.markdown("<h2>ESTADO DE <span class='texto-rosa'>MI PERFIL</span></h2>", unsafe_allow_html=True)
+    if st.button("🔙 Volver al Inicio", type="primary"):
+        cambiar_pagina('Inicio')
+        
+    st.markdown("<h2>MI <span class='texto-rosa'>PERFIL</span></h2>", unsafe_allow_html=True)
     
     with st.container(border=True):
         opciones_dieta = ["Mediterránea", "Vegetariana", "Vegana", "Keto", "Baja en calorías", "Ninguna"]
         idx_dieta = opciones_dieta.index(perfil.get("dieta", "Mediterránea")) if perfil.get("dieta", "Mediterránea") in opciones_dieta else 0
         
-        col_p1, col_p2 = st.columns(2)
-        with col_p1:
-            p_comensales = st.number_input("Comensales", min_value=1, value=perfil.get("comensales", 2))
-            p_dieta = st.selectbox("Tipo de Dieta", opciones_dieta, index=idx_dieta)
-        with col_p2:
-            p_calorias = st.number_input("Objetivo Kcal (Adulto)", min_value=1000, max_value=5000, value=perfil.get("calorias", 2350), step=50)
-            op_tiempo = ["Indiferente", "Rápida (< 20 min)", "Media (20 - 45 min)", "Elaborada (> 45 min)"]
-            p_tiempo = st.selectbox("Tiempo Prep.", op_tiempo, index=op_tiempo.index(perfil.get("tiempo", "Indiferente")))
+        p_comensales = st.number_input("Comensales", min_value=1, value=perfil.get("comensales", 2))
+        p_dieta = st.selectbox("Tipo de Dieta", opciones_dieta, index=idx_dieta)
+        p_calorias = st.number_input("Objetivo Kcal (Adulto)", min_value=1000, max_value=5000, value=perfil.get("calorias", 2350), step=50)
+        
+        op_tiempo = ["Indiferente", "Rápida (< 20 min)", "Media (20 - 45 min)", "Elaborada (> 45 min)"]
+        p_tiempo = st.selectbox("Tiempo Prep.", op_tiempo, index=op_tiempo.index(perfil.get("tiempo", "Indiferente")))
 
         p_edades = st.text_input("Perfil Comensales (Edades)", value=perfil.get("edades", "Adultos"))
         p_alergias = st.text_input("Alergias Clínicas", value=perfil.get("alergias", ""))
         
         st.write("")
-        if st.button("💾 GUARDAR CAMBIOS", type="primary", use_container_width=True):
+        if st.button("💾 GUARDAR CAMBIOS", type="primary"):
             perfil.update({"comensales": p_comensales, "edades": p_edades, "dieta": p_dieta, "alergias": p_alergias, "calorias": p_calorias, "tiempo": p_tiempo})
             guardar_nube('mi_perfil', perfil)
-            st.success("¡Perfil guardado correctamente en Firebase!")
-
+            st.success("Perfil guardado.")
 
 # ==========================================
 # 📦 PANTALLA 3: MI DESPENSA
 # ==========================================
 elif st.session_state['pagina_actual'] == 'Despensa':
-    col_volver, _ = st.columns([1, 2])
-    with col_volver:
-        if st.button("🔙 Volver al Inicio", type="primary", use_container_width=True):
-            cambiar_pagina('Inicio')
+    if st.button("🔙 Volver al Inicio", type="primary"):
+        cambiar_pagina('Inicio')
 
-    st.markdown("<h2>GESTIÓN DE <span class='texto-rosa'>DESPENSA</span></h2>", unsafe_allow_html=True)
+    st.markdown("<h2>MI <span class='texto-rosa'>DESPENSA</span></h2>", unsafe_allow_html=True)
     
-    st.markdown("<h3>Agregar ingrediente </h3>", unsafe_allow_html=True)
-    col1, col2 = st.columns(2)
-    
-    with col1:
-        with st.container(border=True):
-            st.markdown("<p style='font-weight:bold; text-align:center;'>📄 SUBIR TICKET PDF</p>", unsafe_allow_html=True)
-            
-            supermercado_elegido = st.selectbox(
-                "¿De qué súper es el ticket?",
-                ("Elige uno...", "Mercadona", "DIA", "Carrefour"),
-                index=0
-            )
-            
-            if supermercado_elegido != "Elige uno...":
-                # 🚀 CONEXIÓN MÁGICA CON TUS ROBOTS EN FIREBASE
-                documento_firebase = f"catalogo_{supermercado_elegido.lower()}"
-                catalogo_activo = cargar_nube(documento_firebase, {})
-                
-                if not catalogo_activo:
-                    st.error(f"⚠️ No se ha encontrado el catálogo de {supermercado_elegido} en la Nube. ¿Has ejecutado el robot?")
-                else:
-                    st.success(f"☁️ Catálogo de {supermercado_elegido} descargado de Firebase ({len(catalogo_activo)} productos listos).")
-                    archivo = st.file_uploader("", type=["pdf"], label_visibility="collapsed")
-                    
-                    if archivo and st.button("Procesar Ticket PDF", type="secondary", use_container_width=True):
-                        with st.spinner("Procesando..."):
-                            try:
-                                nuevos = procesar_compra_pdf(archivo, list(despensa.keys()))
-                                for ing, datos_t in nuevos.items():
-                                    c = datos_t.get("cantidad", 1) if isinstance(datos_t, dict) else datos_t
-                                    p = datos_t.get("precio", 0.0) if isinstance(datos_t, dict) else 0.0
-                                    
-                                    c_real, mult = calcular_unidades_reales(ing.lower(), c, p, catalogo_activo)
-                                    despensa[ing.lower()] = despensa.get(ing.lower(), 0) + c_real
-                                    
-                                guardar_nube('mi_despensa', despensa)
-                                st.success("Despensa actualizada en la nube.")
-                                st.rerun()
-                            except Exception as e:
-                                st.error(f"Error: {e}")
-
-    with col2:
-        with st.container(border=True):
-            st.markdown("<p style='font-weight:bold; text-align:center;'>✍🏻 AÑADIR MANUALMENTE </p>", unsafe_allow_html=True)
-            nuevo_nom = st.text_input("Ingrediente", placeholder="Ej: Pollo")
-            cant_man = st.number_input("Cantidad", min_value=0.0, step=1.0)
-            un_man = st.selectbox("Medida", ["Gramos", "Kilos", "Litros", "Unidades"])
-            if st.button("Añadir a la nube", type="secondary", use_container_width=True) and nuevo_nom:
-                c_fin = cant_man * 1000 if un_man in ["Kilos", "Litros"] else cant_man
-                nom_l = nuevo_nom.lower().strip()
-                despensa[nom_l] = despensa.get(nom_l, 0) + int(c_fin) if c_fin.is_integer() else c_fin
-                guardar_nube('mi_despensa', despensa)
-                st.success("Añadido.")
-                st.rerun()
-
-    st.markdown("<hr style='border:1px solid #333;'>", unsafe_allow_html=True)
-    
-    if 'mostrar_inventario' not in st.session_state:
-        st.session_state['mostrar_inventario'] = False
+    with st.container(border=True):
+        st.markdown("<p style='font-weight:bold; text-align:center;'>📄 ESCANEAR TICKET PDF</p>", unsafe_allow_html=True)
+        supermercado_elegido = st.selectbox("Súper del ticket:", ("Elige uno...", "Mercadona", "DIA", "Carrefour"), index=0)
         
+        if supermercado_elegido != "Elige uno...":
+            documento_firebase = f"catalogo_{supermercado_elegido.lower()}"
+            catalogo_activo = cargar_nube(documento_firebase, {})
+            
+            if not catalogo_activo:
+                st.error(f"Falta catálogo de {supermercado_elegido}.")
+            else:
+                st.success(f"Catálogo listo ({len(catalogo_activo)} prod).")
+                archivo = st.file_uploader("", type=["pdf"], label_visibility="collapsed")
+                
+                if archivo and st.button("Procesar Ticket PDF", type="primary"):
+                    with st.spinner("Procesando..."):
+                        try:
+                            nuevos = procesar_compra_pdf(archivo, list(despensa.keys()))
+                            for ing, datos_t in nuevos.items():
+                                c = datos_t.get("cantidad", 1) if isinstance(datos_t, dict) else datos_t
+                                p = datos_t.get("precio", 0.0) if isinstance(datos_t, dict) else 0.0
+                                c_real, mult = calcular_unidades_reales(ing.lower(), c, p, catalogo_activo)
+                                despensa[ing.lower()] = despensa.get(ing.lower(), 0) + c_real
+                            guardar_nube('mi_despensa', despensa)
+                            st.success("Añadido.")
+                            st.rerun()
+                        except Exception as e:
+                            st.error(f"Error: {e}")
+
+    with st.container(border=True):
+        st.markdown("<p style='font-weight:bold; text-align:center;'>✍🏻 AÑADIR MANUAL</p>", unsafe_allow_html=True)
+        nuevo_nom = st.text_input("Ingrediente", placeholder="Ej: Pollo")
+        cant_man = st.number_input("Cantidad", min_value=0.0, step=1.0)
+        un_man = st.selectbox("Medida", ["Gramos", "Kilos", "Litros", "Unidades"])
+        if st.button("Añadir", type="primary") and nuevo_nom:
+            c_fin = cant_man * 1000 if un_man in ["Kilos", "Litros"] else cant_man
+            nom_l = nuevo_nom.lower().strip()
+            despensa[nom_l] = despensa.get(nom_l, 0) + int(c_fin) if c_fin.is_integer() else c_fin
+            guardar_nube('mi_despensa', despensa)
+            st.success("Añadido.")
+            st.rerun()
+
+    st.write("")
+    if 'mostrar_inventario' not in st.session_state: st.session_state['mostrar_inventario'] = False
     texto_boton = "🙈 Ocultar Inventario" if st.session_state['mostrar_inventario'] else "🔍 Ver Inventario Actual"
     
-    if st.button(texto_boton, use_container_width=True):
+    if st.button(texto_boton, type="secondary"):
         st.session_state['mostrar_inventario'] = not st.session_state['mostrar_inventario']
         st.rerun()
 
     if st.session_state['mostrar_inventario']:
-        st.markdown("<h3>Inventario Actual (Nube)</h3>", unsafe_allow_html=True)
         with st.container(border=True):
             if not despensa:
-                st.info("La despensa está a cero.")
+                st.info("Despensa vacía.")
             else:
                 for i, (ing, cant) in enumerate(despensa.items()):
-                    st.markdown(f"<span class='texto-cyan' style='font-weight:600; font-size:1.1rem;'>{i + 1}. {ing.capitalize()}</span> <span>➔ `{cant} g/ud`</span>", unsafe_allow_html=True)
+                    st.markdown(f"**{i + 1}. {ing.capitalize()}**: `{cant} g/ud`")
                 
-                st.markdown("<br><hr style='border:1px dashed #444;'><br>", unsafe_allow_html=True)
-                
-                ing_elegido = st.selectbox("Selecciona para editar:", list(despensa.keys()))
+                st.markdown("<hr>", unsafe_allow_html=True)
+                ing_elegido = st.selectbox("Editar/Borrar:", list(despensa.keys()))
                 if ing_elegido:
                     cant_act = float(despensa[ing_elegido])
-                    n_cant = st.number_input(f"Cantidad de {ing_elegido}", min_value=0.0, value=cant_act, step=1.0)
+                    n_cant = st.number_input(f"Cantidad actual:", min_value=0.0, value=cant_act, step=1.0)
                     
-                    c_ed1, c_ed2 = st.columns(2)
-                    with c_ed1:
-                        if st.button("Actualizar Cantidad", use_container_width=True):
-                            if n_cant <= 0: del despensa[ing_elegido]
-                            else: despensa[ing_elegido] = n_cant
-                            guardar_nube('mi_despensa', despensa)
-                            st.rerun()
-                    with c_ed2:
-                        if st.button("🗑️ Borrar", use_container_width=True):
-                            del despensa[ing_elegido]
-                            guardar_nube('mi_despensa', despensa)
-                            st.rerun()
-                            
-                st.write("")
-                if st.button("❌ Vaciar Despensa Completa", type="primary", use_container_width=True):
-                    guardar_nube('mi_despensa', {})
-                    st.rerun()
-                    guardar_nube('mi_despensa', {})
-                    st.rerun()
+                    if st.button("Actualizar Cantidad", type="primary"):
+                        if n_cant <= 0: del despensa[ing_elegido]
+                        else: despensa[ing_elegido] = n_cant
+                        guardar_nube('mi_despensa', despensa)
+                        st.rerun()
+                        
+                    if st.button("🗑️ Borrar Ingrediente", type="secondary"):
+                        del despensa[ing_elegido]
+                        guardar_nube('mi_despensa', despensa)
+                        st.rerun()
+                        
+            st.write("")
+            if st.button("❌ Vaciar Despensa Completa", type="secondary"):
+                guardar_nube('mi_despensa', {})
+                st.rerun()
