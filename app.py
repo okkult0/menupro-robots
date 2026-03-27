@@ -111,7 +111,7 @@ st.markdown("""
         font-weight: 800 !important; 
         border: none !important; 
         box-shadow: 0 8px 25px rgba(255, 0, 127, 0.4) !important; 
-        width: 100%; 
+        width: 50%; 
         min-height: 65px !important; 
         margin-bottom: 15px;
         transition: all 0.2s ease;
